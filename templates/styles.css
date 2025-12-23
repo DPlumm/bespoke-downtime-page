@@ -1,0 +1,175 @@
+:root {
+  color-scheme: light dark;
+  --background: #0f172a;
+  --panel: #0b1221;
+  --panel-border: rgba(148, 163, 184, 0.35);
+  --text: #e2e8f0;
+  --muted: #cbd5e1;
+  --accent: #38bdf8;
+  --accent-strong: #0ea5e9;
+  --shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+  --max-width: 960px;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.1), transparent 30%),
+              radial-gradient(circle at 80% 10%, rgba(14, 165, 233, 0.08), transparent 35%),
+              linear-gradient(135deg, #0f172a, #0b1221 60%, #0f172a);
+  color: var(--text);
+  padding: 2.5rem 1.25rem;
+}
+
+.page {
+  width: min(100%, var(--max-width));
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(11, 18, 33, 0.92));
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: clamp(1.5rem, 2vw + 1rem, 2.75rem);
+}
+
+.header {
+  text-align: center;
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: clamp(1.5rem, 2vw + 1rem, 2.5rem);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0 auto;
+  padding: 0.35rem 0.9rem;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--text);
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  width: fit-content;
+}
+
+#page-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  letter-spacing: -0.02em;
+}
+
+.service-name {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.message {
+  background: rgba(148, 163, 184, 0.05);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 1vw + 1rem, 1.75rem);
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: clamp(1.4rem, 1.5vw + 1rem, 2rem);
+}
+
+.message-heading h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+}
+
+.summary {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.message-body {
+  line-height: 1.7;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.message-body p {
+  margin: 0 0 0.75rem;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.detail-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.detail-label {
+  color: var(--muted);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.detail-value {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.detail-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.detail-link:hover,
+.detail-link:focus-visible {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+.detail-link:focus-visible,
+.page :where(a, button, [role="button"], [tabindex]) {
+  outline-offset: 3px;
+}
+
+.detail-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 1.5rem 1rem;
+  }
+
+  .page {
+    padding: 1.35rem;
+  }
+
+  .message,
+  .details {
+    gap: 0.75rem;
+  }
+
+  .detail-card {
+    padding: 1rem;
+  }
+}
