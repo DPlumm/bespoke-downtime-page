@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Temporarily Unavailable - Planned Downtime</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page" aria-labelledby="page-title">
+    <section class="header" aria-label="Service information">
+      <p class="eyebrow">Planned maintenance</p>
+      <h1 id="page-title">Service Temporarily Unavailable - Planned Downtime</h1>
+      <p class="service-name" aria-label="Service name">{{SERVICE_NAME}}</p>
+    </section>
+
+    <section class="message" aria-label="Message">
+      <div class="message-heading">
+        <h2>What to expect</h2>
+        <p class="summary">We're performing scheduled work to keep things running smoothly.</p>
+      </div>
+      <div class="message-body" role="status" aria-live="polite">
+        {{MESSAGE_HTML}}
+      </div>
+    </section>
+
+    <section class="details" aria-label="Change details">
+      <div class="detail-card">
+        <div class="detail-label">Change reference</div>
+        <div class="detail-value">{{CHANGE_REFERENCE}}</div>
+        <a class="detail-link" href="{{CHANGE_LINK_URL}}">{{CHANGE_LINK_TEXT}}</a>
+      </div>
+      <div class="detail-card">
+        <div class="detail-label">Last updated</div>
+        <div class="detail-value">{{LAST_UPDATED}}</div>
+        <p class="detail-note">Times are displayed in your local timezone.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
