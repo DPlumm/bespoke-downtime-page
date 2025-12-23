@@ -22,6 +22,11 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+.vs/
+
+# Generated site output
+dist/**
+!dist/.gitkeep
 
 # .NET Core
 project.lock.json
@@ -52,3 +57,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# OS files
+.DS_Store
