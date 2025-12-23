@@ -1,75 +1,129 @@
-using System.Text.Json;
+using MaintenancePage.Generator;
 
-var configPath = args.ElementAtOrDefault(0) ?? Path.Combine("config", "config.json");
-var templatePath = args.ElementAtOrDefault(1) ?? Path.Combine("templates", "index.html");
-var outputPath = args.ElementAtOrDefault(2) ?? Path.Combine("dist", "index.html");
-
-Console.WriteLine($"Configuration: {configPath}");
-Console.WriteLine($"Template:      {templatePath}");
-Console.WriteLine($"Output:        {outputPath}");
-
-if (!File.Exists(configPath))
+try
 {
-    Console.Error.WriteLine($"Config file not found at '{configPath}'.");
+    return Run(args);
+}
+catch (ConfigurationLoadException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+    return 1;
+}
+catch (ArgumentException ex)
+{
+    Console.Error.WriteLine(ex.Message);
     return 1;
 }
 
-if (!File.Exists(templatePath))
+static int Run(string[] args)
 {
-    Console.Error.WriteLine($"Template file not found at '{templatePath}'.");
-    return 1;
+    var arguments = ParseArguments(args);
+
+    Console.WriteLine($"Configuration: {arguments.ConfigPath}");
+    Console.WriteLine($"Template:      {arguments.TemplatePath}");
+    Console.WriteLine($"Output:        {arguments.OutputPath}");
+
+    var config = MaintenanceConfigLoader.Load(arguments.ConfigPath);
+    var template = LoadTemplate(arguments.TemplatePath);
+
+    var content = ApplyTemplate(template, config);
+    Directory.CreateDirectory(Path.GetDirectoryName(arguments.OutputPath)!);
+    File.WriteAllText(arguments.OutputPath, content);
+
+    Console.WriteLine("Generated maintenance page successfully.");
+    return 0;
 }
 
-var options = new JsonSerializerOptions
+static (string ConfigPath, string TemplatePath, string OutputPath) ParseArguments(string[] args)
 {
-    PropertyNameCaseInsensitive = true,
-    ReadCommentHandling = JsonCommentHandling.Skip,
-    AllowTrailingCommas = true
-};
+    var configPath = Path.Combine("config", "maintenance.json");
+    var templatePath = Path.Combine("templates", "index.html");
+    var outputPath = Path.Combine("dist", "index.html");
 
-var config = JsonSerializer.Deserialize<MaintenanceConfig>(File.ReadAllText(configPath), options);
-if (config is null)
-{
-    Console.Error.WriteLine("Unable to read maintenance page configuration.");
-    return 1;
+    var positional = new List<string>();
+
+    for (var index = 0; index < args.Length; index++)
+    {
+        var argument = args[index];
+
+        switch (argument)
+        {
+            case "--config":
+            case "-c":
+                configPath = RequireNextValue(args, ref index, argument);
+                break;
+            case "--template":
+            case "-t":
+                templatePath = RequireNextValue(args, ref index, argument);
+                break;
+            case "--output":
+            case "-o":
+                outputPath = RequireNextValue(args, ref index, argument);
+                break;
+            default:
+                positional.Add(argument);
+                break;
+        }
+    }
+
+    if (positional.Count > 0)
+    {
+        configPath = positional[0];
+    }
+
+    if (positional.Count > 1)
+    {
+        templatePath = positional[1];
+    }
+
+    if (positional.Count > 2)
+    {
+        outputPath = positional[2];
+    }
+
+    return (configPath, templatePath, outputPath);
 }
 
-var template = File.ReadAllText(templatePath);
-var substitutions = new Dictionary<string, string>
+static string RequireNextValue(string[] args, ref int currentIndex, string option)
 {
-    ["title"] = config.Title,
-    ["message"] = config.Message,
-    ["estimatedReturn"] = config.EstimatedReturn ?? string.Empty,
-    ["contactEmail"] = config.ContactEmail ?? string.Empty
-};
+    if (currentIndex + 1 >= args.Length)
+    {
+        throw new ArgumentException($"Missing value for {option}.");
+    }
 
-var content = ApplyTemplate(template, substitutions);
-Directory.CreateDirectory(Path.GetDirectoryName(outputPath)!);
-File.WriteAllText(outputPath, content);
+    currentIndex += 1;
+    return args[currentIndex];
+}
 
-Console.WriteLine("Generated maintenance page successfully.");
-return 0;
-
-static string ApplyTemplate(string template, IReadOnlyDictionary<string, string> values)
+static string LoadTemplate(string templatePath)
 {
+    if (!File.Exists(templatePath))
+    {
+        throw new ConfigurationLoadException($"Template file not found at '{templatePath}'.");
+    }
+
+    return File.ReadAllText(templatePath);
+}
+
+static string ApplyTemplate(string template, MaintenanceConfig config)
+{
+    var substitutions = new Dictionary<string, string>
+    {
+        ["title"] = $"{config.ServiceName} maintenance",
+        ["serviceName"] = config.ServiceName,
+        ["changeReference"] = config.ChangeReference,
+        ["changeLinkUrl"] = config.ChangeLinkUrl,
+        ["changeLinkText"] = config.ChangeLinkText,
+        ["message"] = config.Message.ReplaceLineEndings("<br />\n")
+    };
+
     var result = template;
 
-    foreach (var (key, value) in values)
+    foreach (var (key, value) in substitutions)
     {
         var placeholder = $"{{{{{key}}}}}";
         result = result.Replace(placeholder, value, StringComparison.OrdinalIgnoreCase);
     }
 
     return result;
-}
-
-internal sealed record MaintenanceConfig
-{
-    public required string Title { get; init; }
-
-    public required string Message { get; init; }
-
-    public string? EstimatedReturn { get; init; }
-
-    public string? ContactEmail { get; init; }
 }

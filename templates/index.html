@@ -76,12 +76,13 @@
   <main class="card">
     <div class="pill">
       <span>⚙️</span>
-      <span>Scheduled maintenance</span>
+      <span>{{serviceName}} maintenance</span>
     </div>
-    <h1>{{title}}</h1>
+    <h1>Change {{changeReference}}</h1>
     <p>{{message}}</p>
-    <p class="subtle">Estimated return: {{estimatedReturn}}</p>
-    <p class="subtle">Need help? <a href="mailto:{{contactEmail}}">{{contactEmail}}</a></p>
+    <p class="subtle">
+      <a href="{{changeLinkUrl}}">{{changeLinkText}}</a>
+    </p>
   </main>
 </body>
 </html>
