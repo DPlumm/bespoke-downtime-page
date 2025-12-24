@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using MaintenancePage.Generator;
 using Xunit;
 
@@ -7,19 +6,6 @@ namespace MaintenancePage.Generator.Tests;
 
 public class GeneratorTemplateTests
 {
-    private static readonly Type ProgramType = typeof(MaintenanceConfig).Assembly
-        .GetTypes()
-        .FirstOrDefault(type => string.Equals(type.Name, "Program", StringComparison.Ordinal))
-        ?? throw new InvalidOperationException("Unable to locate Program type.");
-
-    private static readonly MethodInfo ApplyTemplateMethod = ProgramType
-        .GetMethod("ApplyTemplate", BindingFlags.Static | BindingFlags.NonPublic)
-        ?? throw new InvalidOperationException("Unable to find ApplyTemplate method.");
-
-    private static readonly MethodInfo ValidateChangeLinkUrlMethod = ProgramType
-        .GetMethod("ValidateChangeLinkUrl", BindingFlags.Static | BindingFlags.NonPublic)
-        ?? throw new InvalidOperationException("Unable to find ValidateChangeLinkUrl method.");
-
     [Fact]
     public void Rendering_includes_service_name_and_change_reference()
     {
@@ -33,7 +19,7 @@ public class GeneratorTemplateTests
 
         var template = "<div>{{SERVICE_NAME}}</div><span>{{CHANGE_REFERENCE}}</span>";
 
-        var result = ApplyTemplate(template, config);
+        var result = TemplateRenderer.ApplyTemplate(template, config);
 
         Assert.Contains("Payments &amp; Orders", result);
         Assert.Contains("CR&lt;001&gt;", result);
@@ -53,7 +39,7 @@ public class GeneratorTemplateTests
 
         var template = "<main>{{MESSAGE_HTML}}</main>";
 
-        var result = ApplyTemplate(template, config);
+        var result = TemplateRenderer.ApplyTemplate(template, config);
 
         Assert.Contains("&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt; Please standby.", result);
         Assert.DoesNotContain("<script>", result, StringComparison.OrdinalIgnoreCase);
@@ -62,20 +48,8 @@ public class GeneratorTemplateTests
     [Fact]
     public void Invalid_change_link_url_is_rejected()
     {
-        static void Invoke(string url)
-        {
-            ValidateChangeLinkUrlMethod.Invoke(null, new object?[] { url });
-        }
-
-        Assert.Throws<TargetInvocationException>(() => Invoke("ftp://example.com"));
-        var exception = Assert.Throws<TargetInvocationException>(() => Invoke("javascript:alert(1)"));
-
-        Assert.IsType<ArgumentException>(exception.InnerException);
-    }
-
-    private static string ApplyTemplate(string template, MaintenanceConfig config)
-    {
-        return (string)ApplyTemplateMethod.Invoke(null, new object?[] { template, config })!;
+        Assert.Throws<ArgumentException>(() => TemplateRenderer.ValidateChangeLinkUrl("ftp://example.com"));
+        Assert.Throws<ArgumentException>(() => TemplateRenderer.ValidateChangeLinkUrl("javascript:alert(1)"));
     }
 
     private static MaintenanceConfig CreateConfig(
