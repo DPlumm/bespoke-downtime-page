@@ -7,7 +7,9 @@ namespace MaintenancePage.Generator.Tests;
 
 public class GeneratorTemplateTests
 {
-    private static readonly Type ProgramType = typeof(MaintenanceConfig).Assembly.GetType("MaintenancePage.Generator.Program")
+    private static readonly Type ProgramType = typeof(MaintenanceConfig).Assembly
+        .GetTypes()
+        .FirstOrDefault(type => string.Equals(type.Name, "Program", StringComparison.Ordinal))
         ?? throw new InvalidOperationException("Unable to locate Program type.");
 
     private static readonly MethodInfo ApplyTemplateMethod = ProgramType
