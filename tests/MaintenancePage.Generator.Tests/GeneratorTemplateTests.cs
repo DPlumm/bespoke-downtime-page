@@ -32,7 +32,7 @@ public class GeneratorTemplateTests
         var config = CreateConfig(
             serviceName: "Status",
             changeReference: "CR-9",
-            changeLinkUrl: "/changes/9",
+            changeLinkUrl: "https://example.com/changes/9",
             changeLinkText: "Details",
             message: message
         );
