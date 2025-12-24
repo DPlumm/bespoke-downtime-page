@@ -7,12 +7,15 @@ namespace MaintenancePage.Generator.Tests;
 
 public class GeneratorTemplateTests
 {
-    private static readonly MethodInfo ApplyTemplateMethod = typeof(global::Program)
-        .GetMethod("ApplyTemplate", BindingFlags.Static | BindingFlags.NonPublic)!
+    private static readonly Type ProgramType = typeof(MaintenanceConfig).Assembly.GetType("Program")
+        ?? throw new InvalidOperationException("Unable to locate Program type.");
+
+    private static readonly MethodInfo ApplyTemplateMethod = ProgramType
+        .GetMethod("ApplyTemplate", BindingFlags.Static | BindingFlags.NonPublic)
         ?? throw new InvalidOperationException("Unable to find ApplyTemplate method.");
 
-    private static readonly MethodInfo ValidateChangeLinkUrlMethod = typeof(global::Program)
-        .GetMethod("ValidateChangeLinkUrl", BindingFlags.Static | BindingFlags.NonPublic)!
+    private static readonly MethodInfo ValidateChangeLinkUrlMethod = ProgramType
+        .GetMethod("ValidateChangeLinkUrl", BindingFlags.Static | BindingFlags.NonPublic)
         ?? throw new InvalidOperationException("Unable to find ValidateChangeLinkUrl method.");
 
     [Fact]
