@@ -3,9 +3,9 @@ using System.Text;
 
 namespace MaintenancePage.Generator;
 
-public static class TemplateRenderer
+internal static class TemplateRenderer
 {
-    public static string ApplyTemplate(string template, MaintenanceConfig config)
+    internal static string ApplyTemplate(string template, MaintenanceConfig config)
     {
         var lastUpdated = DateTimeOffset.Now.ToString("O");
         var encodedServiceName = WebUtility.HtmlEncode(config.ServiceName);
@@ -35,7 +35,7 @@ public static class TemplateRenderer
         return result;
     }
 
-    public static string ValidateChangeLinkUrl(string changeLinkUrl)
+    internal static string ValidateChangeLinkUrl(string changeLinkUrl)
     {
         var trimmed = changeLinkUrl.Trim();
 
