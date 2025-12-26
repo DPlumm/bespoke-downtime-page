@@ -10,7 +10,7 @@ public class GeneratorTemplateTests
     public void Rendering_includes_service_name_and_change_reference()
     {
         var config = CreateConfig(
-            serviceName: "Payments & Orders",
+            serviceName: "DocumentStore",
             changeReference: "CR<001>",
             changeLinkUrl: "https://example.com/changes/1",
             changeLinkText: "View change",
@@ -30,7 +30,7 @@ public class GeneratorTemplateTests
     {
         var message = "<script>alert('xss')</script> Please standby.";
         var config = CreateConfig(
-            serviceName: "Status",
+            serviceName: "DocumentStore",
             changeReference: "CR-9",
             changeLinkUrl: "https://example.com/changes/9",
             changeLinkText: "Details",
