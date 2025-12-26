@@ -38,6 +38,12 @@ Host the `dist/` directory as a static website. Examples:
 - **IIS**: Enable static content and point the site root to `dist/`.
 - **GitHub Pages**: Publish the `dist/` folder as your Pages source.
 
+### Enable GitHub Pages (Actions)
+
+1. In your repository, open **Settings** → **Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Push to `main`. The `Publish Pages` workflow will build the generator, create `dist/`, and deploy it.
+
 ## Troubleshooting
 
 - **Missing fields**: Ensure all required fields in `config/maintenance.json` are present and non-empty.
